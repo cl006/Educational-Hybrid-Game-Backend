@@ -1,46 +1,43 @@
 doctype html
 html
   head
-    title Level of Question
+    title Level Selection | Adventure Dashboard
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    link(rel="stylesheet", href="/css/game-player.css")
-    style.
-      .level-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        background: #f8f9fa; /* Background(Image) */
-      }
-      .card-wrap {
-        display: flex;
-        gap: 30px;
-        margin-top: 40px;
-      }
-      .level-card {
-        width: 280px;
-        height: 280px;
-        background: white;
-        border-radius: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        cursor: pointer;
-        transition: transform 0.2s;
-      }
-      .level-card h2 { font-size: 3rem; color: #1a46ba; }
-      @media (max-width: 768px) {
-        .card-wrap { flex-direction: column; }
-        .level-card { width: 220px; height: 180px; border-radius: 40px; }
-      }
+    //- 1. 引入分离后的 CSS
+    link(rel="stylesheet", href="/css/question-level.css")
+    //- 2. 引入 FontAwesome 图标
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
 
   body
     .level-container
-      h1(style="font-size: 4rem; color: #1a46ba;") Level of Question
+      h1.level-title CHOOSE YOUR FATE
+      
       .card-wrap
-        .level-card(onclick=`location.href='/game/start/${roomCode}'`)
+        //- Normal 选项
+        .level-card(onclick="startChallenge('Easy')")
+          i.fas.fa-scroll(style="font-size: 3.5rem; color: #3e2b1c;")
           h2 Normal
-        .level-card(onclick=`location.href='/game/challenge/${roomCode}'`)
+          p (3 Questions)
+          
+        //- Challenge 选项
+        .level-card(onclick="startChallenge('Challenge')")
+          i.fas.fa-khanda(style="font-size: 3.5rem; color: #3e2b1c;")
           h2 Challenge
+          p (3 Tougher Tasks)
+
+    script.
+      // 获取后端传入的 sessionId
+      const SESSION_ID = "#{sessionId}"; 
+
+      function startChallenge(selectedLevel) {
+          // 1. 获取 URL 中的参数 (默认为 ROUND)
+          const params = new URLSearchParams(window.location.search);
+          const mode = params.get('mode') || 'ROUND';
+          
+          // 2. 轮次挑战统一为 3 道题
+          const count = 3; 
+
+          // 3. ✅ 携带所有核心参数跳转
+          // 路由格式: /question-page/S0001?level=Easy&mode=ROUND&count=3
+          window.location.href = `/question-page/${SESSION_ID}?level=${selectedLevel}&mode=${mode}&count=${count}`;
+      }

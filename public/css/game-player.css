@@ -73,6 +73,23 @@ body {
     position: absolute;
     inset: 0;
     z-index: -1;
+    box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.8);
+    background: #000;
+    overflow: hidden;
+}
+
+@keyframes slowZoom {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .media-background img {
@@ -80,9 +97,9 @@ body {
     height: 100%;
     object-fit: cover;
     filter: brightness(0.6);
-    transition: opacity 0.8s ease-in-out, filter 0.5s;
     opacity: 0.6;
     will-change: opacity;
+    animation: slowZoom 20s infinite ease-in-out;
 }
 
 /* 顶部状态药丸 */
@@ -227,23 +244,176 @@ body {
     transition: 0.1s;
 }
 
-/* 响应式辅助（如果 JS 没加载也能有基础显示） */
-.hint-text {
-    animation: pulse 2s infinite;
+/* --- 修改后的背包样式 (更符合你的游戏风格) --- */
+
+.bag-container {
+    width: 95%;
+    max-width: 900px;
+    height: 70vh;
+    /* 替换为羊皮纸质感颜色 */
+    background: #fdf6e3;
+    border: 3px solid #D8B56A;
+    /* 金色边框 */
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
 }
 
-@keyframes pulse {
+.bag-content {
+    flex: 1;
+    /* 占据中间所有剩余空间 */
+    overflow-y: auto;
+    /* 开启垂直滚动 */
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    /* 稍微加深背景区分滚动区 */
+}
+
+.bag-tabs {
+    display: flex;
+    background: #3c0a0a;
+    /* 使用和你侧边栏一样的深酒红色 */
+    padding: 5px 5px 0 5px;
+}
+
+.bag-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    /* 💡 必须大于 9999 才能盖住侧边栏 */
+    z-index: 10001;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
+}
+
+.bag-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* 手机端一列展示 */
+    gap: 15px;
+    padding-bottom: 20px;
+    /* 底部留白，防止被按钮遮挡 */
+}
+
+/* 4. 美化滚动条 (可选，让它看起来更符合游戏风格) */
+.bag-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.bag-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.bag-content::-webkit-scrollbar-thumb {
+    background: #D8B56A;
+    border-radius: 10px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    background: transparent;
+    color: rgba(216, 181, 106, 0.6);
+    /* 没选中的时候是暗金色 */
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+    font-family: 'Georgia', serif;
+}
+
+.tab-btn.active {
+    background: #fdf6e3;
+    /* 选中时变成羊皮纸色，与内容区融为一体 */
+    color: #3c0a0a;
+    /* 文字变深红 */
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.inventory-item {
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px solid #e3d2b4;
+    padding: 15px;
+    text-align: center;
+    border-radius: 12px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    justify-content: center;
+    min-height: 160px;
+    gap: 8px;
+}
+
+.inventory-item:hover {
+    transform: translateY(-5px);
+    border-color: #D8B56A;
+    box-shadow: 0 5px 15px rgba(216, 181, 106, 0.3);
+}
+
+/* 退出按钮美化 */
+.exit-btn {
+    margin: 15px;
+    padding: 10px 40px;
+    background: #3c0a0a;
+    color: #D8B56A;
+    border: 2px solid #D8B56A;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.exit-btn:hover {
+    background: #D8B56A;
+    color: #3c0a0a;
+}
+
+/* 红色发光按钮样式 */
+.btn-pill-red {
+    background: #e74c3c;
+    color: white;
+    border: 2px solid #c0392b;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+    transition: 0.3s;
+    /* 强烈的发光动画 */
+    animation: endBtnGlow 2s infinite ease-in-out;
+}
+
+@keyframes endBtnGlow {
     0% {
-        opacity: 0.5;
+        box-shadow: 0 0 10px rgba(231, 76, 60, 0.4);
+        transform: scale(1);
     }
 
     50% {
-        opacity: 1;
+        box-shadow: 0 0 25px rgba(231, 76, 60, 0.8);
+        transform: scale(1.05);
     }
 
     100% {
-        opacity: 0.5;
+        box-shadow: 0 0 10px rgba(231, 76, 60, 0.4);
+        transform: scale(1);
     }
+}
+
+#endGameBtn:hover {
+    background: #ff4d4d;
+    box-shadow: 0 0 30px rgba(255, 77, 77, 0.8);
 }
 
 /* --- 手机移动端适配 --- */

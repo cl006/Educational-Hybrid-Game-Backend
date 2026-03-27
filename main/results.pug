@@ -1,0 +1,50 @@
+doctype html
+html
+  head
+    title Game Results
+    link(rel="stylesheet", href="/css/results.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+  body
+    .results-layout
+      // --- 胜利者大特写 (冠军) ---
+      section.winner-podium
+        .crown-icon: i.fas.fa-crown
+        h1 THE ULTIMATE EXPLORER
+        .winner-card
+          //- 💡 使用从 players 表拿到的 img_id 渲染头像
+          img(src="/images/" + (winner.img_id || 1) + ".png" class="winner-avatar")
+          h2= winner.player_name
+          p.winner-stat Found #{winner.real_treasures} Real Treasures!
+
+      // --- 详细排行榜 ---
+      section.leaderboard-section
+        h3 FULL RANKINGS
+        .table-wrapper
+          table.results-table
+            thead
+              tr
+                th RANK
+                th PLAYER
+                th REAL 💎
+                th FAKE ❌
+                th FINAL COINS
+                th QUIZ (ACC)
+            tbody
+              each player, index in rankings
+                tr(class=(index === 0 ? 'top-rank' : ''))
+                  td.rank-num= index + 1
+                  td.player-cell
+                    .player-badge
+                      //- 💡 排行榜里也加上玩家的小头像
+                      img(src="/images/" + (player.img_id || 1) + ".png" class="mini-avatar")
+                      span= player.player_name
+                  td.stat-highlight= player.real_treasures
+                  td= player.fake_treasures
+                  td.score-cell= player.final_score
+                  td
+                    span.quiz-stat #{player.correct_q} / #{player.total_q}
+                    br
+                    small  (#{Math.round((player.correct_q / (player.total_q || 1)) * 100)}%)
+
+      footer.results-footer
+        button.btn-home(onclick="window.location.href='/'") BACK TO MAIN MENU

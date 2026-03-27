@@ -21,6 +21,7 @@ const registerRoute = require('./routes/register')(db);
 const loginRoute = require('./routes/login')(db);
 const sessionRouter = require('./routes/session')(db);
 const gameRoutes = require('./routes/game')(db);
+const cors = require('cors');
 
 //2. Initialize the App:
 const app = express();
@@ -32,6 +33,12 @@ app.use((req, res, next) => {
     res.setHeader('ngrok-skip-browser-warning', 'true');
     next();
 });
+app.use(cors({
+    origin: 'https://fwdd-assignment.pages.dev', // 允许你的前端 Pages 域名
+    credentials: true, // 允许跨域携带 Session/Cookie
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

@@ -21,7 +21,7 @@ html
 
       // --- 核心功能区 (网格布局) ---
       main.game-controls
-        button.btn-feature(onclick="openModal('monitor')")
+        button.btn-feature(onclick="openMonitorModal()")
           i.fas.fa-users-viewfinder
           span Player Monitoring Form
         
@@ -40,6 +40,7 @@ html
       // --- 底部控制栏 ---
       footer.game-footer
         button#exitBtn.btn-nav EXIT
+        button#endGameBtn.btn-pill-red(style="display: none;" onclick="confirmEndGame()") END GAME
         button#nextRoundBtn.btn-pill-gold NEXT ROUND
 
       //- 自定义红色警告弹窗
@@ -104,6 +105,32 @@ html
           .shop-body
             span.shop-label Shop Access Code 
             h1#displayShopCode ----
+
+      //- Player Monitoring Dashboard Modal
+      #monitorModal.modal-overlay(style="display: none;")
+        .monitor-box
+          header.monitor-header
+            i.fas.fa-users-viewfinder
+            h2 SESSION MONITOR
+            .round-filter
+              label ROUND:
+              select#monitorRoundPicker(onchange="updateMonitor()")
+                option(value="") All Rounds
+          
+          button.close-special(onclick="closeMonitorModal()") &times;
+          
+          .monitor-table-container
+            table.monitor-table
+              thead
+                tr
+                  th ID
+                  th NAME
+                  th CARDS
+                  th TREASURES
+                  th REAL
+                  th FAKE
+              tbody#monitorTableBody
+                //- Data injected by JS
 
     script.
       // 这一行非常重要！它把后端的 session_id 传给前端 JS

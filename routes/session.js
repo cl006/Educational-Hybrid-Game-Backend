@@ -300,7 +300,7 @@ module.exports = (db) => {
                     if (players_Name !== playerName) {
                         return res.json({
                             success: false,
-                            message: `Game in progress! You must use your original name: "${sqlName}" to rejoin.`
+                            message: `Game in progress! You must use your original name: "${players_Name}" to rejoin.`
                         });
                     }
                     // 名字一致，允许重连进入

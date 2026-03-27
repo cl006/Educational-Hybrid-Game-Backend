@@ -15,13 +15,13 @@ html
           a.nav-link.active(href="#")
             i.fas.fa-home
             span HOME
-          a.nav-link(href="#")
+          a.nav-link(href="javascript:void(0)" onclick="openBag()")
             i.fas.fa-briefcase
             span BAG
 
       main.main-display-container
         .media-background
-          img(src="/images/map_background.png") 
+          img(src="/images/round1.png") 
 
         .status-header-overlay
           .status-pill
@@ -31,7 +31,7 @@ html
             .divider
             .stat-item
               span.icon ✪
-              span.label Coins: 100
+              span.label `Coins: ${player.coins}`
 
         //- 中间核心展示区 (Hero Box 模式)
         .hero-box(style="z-index: 100;") 
@@ -67,6 +67,23 @@ html
 
         //- 右下角规则按钮
         button.rules-btn Rule of Game
+
+    #bag-modal.bag-overlay(style="display: none;")
+      .bag-container
+        //- 顶部切换标签
+        .bag-tabs
+          button.tab-btn.active(onclick="switchTab('cards')") My Cards
+          button.tab-btn(onclick="switchTab('clues')") My Clues
+          button.tab-btn(onclick="switchTab('treasures')") My Treasure
+        
+        //- 内容展示区域
+        .bag-content
+          #bag-grid.bag-grid
+            //- 这里由 JS 动态填充卡片
+          
+        //- 底部退出按钮
+        .bag-footer
+          button.exit-btn(onclick="closeBag()") Exit
 
     //- 3. 修正：扫描容器必须在 body 内，且包含在 #qr-reader-container 中
     #qr-reader-container(style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; flex-direction:column; align-items:center; justify-content:center;")

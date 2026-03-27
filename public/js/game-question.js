@@ -45,7 +45,7 @@ function checkAnswer(isCorrect, clickedBtn) {
     } else {
         clickedBtn.style.backgroundColor = "#e74c3c"; // 变红
         clickedBtn.style.color = "white";
-        alert("❌ WRONG! Better luck next time.");
+        alert("WRONG! Better luck next time.");
     }
 
     // 显示解释栏（对应你设计稿底部的部分）
