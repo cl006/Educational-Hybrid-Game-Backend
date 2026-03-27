@@ -1,0 +1,111 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Host Dashboard - Game Start
+    link(rel="stylesheet", href="/css/game-host.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+  body
+    .game-layout
+      // --- 背景图层 ---
+      .game-background
+        img(src="/images/image1.png") 
+
+      // --- 顶部状态栏 ---
+      header.game-header
+        .round-info
+          span CURRENT ROUND:
+          input#roundInput(type="number" value=room.round_number || 1 readonly)
+        button#ruleBtn.btn-circle: i.fas.fa-scroll
+
+      // --- 核心功能区 (网格布局) ---
+      main.game-controls
+        button.btn-feature(onclick="openModal('monitor')")
+          i.fas.fa-users-viewfinder
+          span Player Monitoring Form
+        
+        button.btn-feature(onclick="openShopModal()")
+          i.fas.fa-store
+          span Shop Access Code
+          
+        button.btn-feature(onclick="openSpecialModal()")
+          i.fas.fa-key
+          span Special Cell Verify Code
+          
+        button.btn-feature(onclick="openTreasureModal()")
+          i.fas.fa-gem
+          span Treasure Locations
+
+      // --- 底部控制栏 ---
+      footer.game-footer
+        button#exitBtn.btn-nav EXIT
+        button#nextRoundBtn.btn-pill-gold NEXT ROUND
+
+      //- 自定义红色警告弹窗
+      #customModal.modal-overlay(style="display: none;")
+        .modal-box
+          i.fas.fa-exclamation-circle.modal-icon
+          h3#modalTitle ATTENTION
+          p#modalMessage
+          #modalInputContainer(style="display: none;")
+            input#modalInput(type="text" placeholder="Enter Host ID...")
+          .modal-buttons
+            button#modalConfirm.btn-modal-primary CONFIRM
+            button#modalCancel.btn-modal-secondary CANCEL
+
+      //- Special Cell 查询弹窗
+      #specialCellModal.modal-overlay(style="display: none;")
+        .special-box
+          header.special-header
+            i.fas.fa-key
+            h2 SPECIAL CELL VERIFIER
+          //- 独立的关闭按钮
+          button.close-special(onclick="closeSpecialModal()") &times;
+          
+          .search-container
+            input#cellSearchInput(type="text" placeholder="Search Cell Number..." oninput="filterCells()")
+          
+          .cell-list-container
+            .table-head-row
+              span(style="color: #D8B56A;") CELL NO.
+              span(style="color: #D8B56A;") VERIFY CODE
+            //- 数据容器
+            #cellTableBody
+            //- JS 会在这里插入数据
+
+      //- Treasure Locations 查询弹窗
+      #treasureModal.modal-overlay(style="display: none;")
+        .special-box
+          header.special-header
+            i.fas.fa-gem
+            h2 TREASURE LOCATIONS
+          button.close-special(onclick="closeTreasureModal()") &times;
+          
+          .search-container
+            input#treasureSearchInput(type="text" placeholder="SEARCH TREASURE ID..." oninput="filterTreasures()")
+          
+          .cell-list-container
+            .table-head-row
+              span(style="color: #D8B56A;") ID / CELL
+              span(style="color: #D8B56A;") STATUS
+            #treasureTableBody
+
+      //- Shop Access Code 弹窗
+      #shopModal.modal-overlay(style="display: none;")
+        .shop-box
+          header.shop-header
+            i.fas.fa-store
+            h2 SHOP ACCESS
+          
+          //- 右上角的大关闭按钮
+          button.close-special(onclick="closeShopModal()") &times;
+          
+          .shop-body
+            span.shop-label Shop Access Code 
+            h1#displayShopCode ----
+
+    script.
+      // 这一行非常重要！它把后端的 session_id 传给前端 JS
+      const roomSessionId = "#{room.session_id}";
+    script(src="/js/game-host.js")

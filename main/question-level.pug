@@ -1,0 +1,46 @@
+doctype html
+html
+  head
+    title Level of Question
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="/css/game-player.css")
+    style.
+      .level-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: #f8f9fa; /* Background(Image) */
+      }
+      .card-wrap {
+        display: flex;
+        gap: 30px;
+        margin-top: 40px;
+      }
+      .level-card {
+        width: 280px;
+        height: 280px;
+        background: white;
+        border-radius: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .level-card h2 { font-size: 3rem; color: #1a46ba; }
+      @media (max-width: 768px) {
+        .card-wrap { flex-direction: column; }
+        .level-card { width: 220px; height: 180px; border-radius: 40px; }
+      }
+
+  body
+    .level-container
+      h1(style="font-size: 4rem; color: #1a46ba;") Level of Question
+      .card-wrap
+        .level-card(onclick=`location.href='/game/start/${roomCode}'`)
+          h2 Normal
+        .level-card(onclick=`location.href='/game/challenge/${roomCode}'`)
+          h2 Challenge

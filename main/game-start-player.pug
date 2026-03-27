@@ -1,0 +1,82 @@
+doctype html
+doctype html
+html
+  head
+    title Adventure Dashboard
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="/css/game-player.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    //- 1. 确保库在这里引入
+    script(src="https://unpkg.com/html5-qrcode")
+  body
+    .layout-container
+      nav.sidebar-container
+        .nav-group
+          a.nav-link.active(href="#")
+            i.fas.fa-home
+            span HOME
+          a.nav-link(href="#")
+            i.fas.fa-briefcase
+            span BAG
+
+      main.main-display-container
+        .media-background
+          img(src="/images/map_background.png") 
+
+        .status-header-overlay
+          .status-pill
+            .stat-item
+              span.icon ★
+              span.label Treasures: 0
+            .divider
+            .stat-item
+              span.icon ✪
+              span.label Coins: 100
+
+        //- 中间核心展示区 (Hero Box 模式)
+        .hero-box(style="z-index: 100;") 
+          .info-glass-card
+            //- 1. 玩家基本信息展示
+            .info-row
+              label CURRENT ROUND
+              span.value-text= room.round_number
+            .info-row
+              label PLAYER NAME
+              span.value-text= player.player_name
+            
+            hr(style="border: 0; border-top: 1px solid rgba(216, 181, 106, 0.2); margin: 15px 0;")
+
+            //- 2. 交互区域 (根据设备自动切换)
+            .interaction-zone
+              //- 手机版：显示大药丸扫码按钮
+              .mobile-only(style="display: none;")
+                button.btn-pill.btn-scan(type="button" style="cursor: pointer;")
+                  i.fas.fa-qrcode 
+                  |  SCAN QR CODE
+                p.hint-text(style="font-size: 0.7rem; color: #D8B56A; margin-top: 8px; opacity: 0.8;") Scan physical qr code to next page 
+
+              //- 电脑版：显示手动输入框
+              .desktop-only(style="display: none;")
+                p(style="font-size: 0.8rem; color: #D8B56A; margin-bottom: 10px;") Manual Entry Mode
+                .manual-input-group(style="display: flex; gap: 10px;")
+                  input#manualCell.btn-pill(type="text" placeholder="CELL (C03)" style="width: 50%; background: rgba(0,0,0,0.2); border: 1px solid rgba(216, 181, 106, 0.3); color: white;")
+                  input#manualVerify.btn-pill(type="text" placeholder="CODE" style="width: 50%; background: rgba(0,0,0,0.2); border: 1px solid rgba(216, 181, 106, 0.3); color: white;")
+                button#manualSubmit.btn-pill(style="margin-top: 15px; background: #D8B56A; color: #000; font-weight: bold; width: 100%;") 
+                  i.fas.fa-unlock-alt
+                  |  UNLOCK CELL
+
+        //- 右下角规则按钮
+        button.rules-btn Rule of Game
+
+    //- 3. 修正：扫描容器必须在 body 内，且包含在 #qr-reader-container 中
+    #qr-reader-container(style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; flex-direction:column; align-items:center; justify-content:center;")
+      #qr-reader(style="width: 300px; background: white; border: 2px solid #D8B56A;")
+      button#close-scanner.btn-pill(style="margin-top: 20px; background: #666; cursor: pointer;") CLOSE
+
+    script.
+      const SESSION_ID = "#{room.session_id}";
+      const MY_PLAYER_NAME = "#{player.player_name}";
+      const ROOM_ACCESS_CODE = "#{room.session_access_code}";
+      const BASE_URL = "http://192.168.0.104:3000";
+
+    script(src="/js/game-player.js")

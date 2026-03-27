@@ -1,0 +1,90 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Game Menu
+    link(rel="stylesheet", href="/css/home.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    script(src="https://unpkg.com/html5-qrcode")
+  body
+    #userStatus(data-logged-in=username ? "true" : "false" style="display: none;")
+    .layout-container
+      aside.sidebar-container
+        .menu-toggle: i.fas.fa-bars
+        .nav-group
+          a.nav-link.active(href="/")
+            i.fas.fa-home
+            span Home
+          a.nav-link(href="/history")
+            i.fas.fa-history
+            span History
+
+        .account-section
+          if username
+            .avatar-wrapper
+              .avatar-circle= username.charAt(0).toUpperCase()
+              .account-tooltip
+                span.user-name= username
+                | 
+                a.logout-link(href="/logout") Logout
+          else
+            a.avatar-wrapper(href="/login")
+              .avatar-circle.guest-icon
+                i.fas.fa-user
+              .account-tooltip
+                span Sign In
+
+      main.main-display-container
+        .media-background 
+          img(src="/images/background2.png")
+        .hero-box
+          button.btn-pill Join Game
+          button.btn-pill Create Game
+      #joinModal.modal-overlay.hidden
+        .modal-content.glass-effect
+          h2(style="font-family: Georgia; color: #D8B56A;") JOIN THE SESSION
+          
+          #reader(style="width: 100%; display: none; margin-bottom: 20px; border: 1px solid #D8B56A;")
+          button#startScan.btn-pill-small(style="display: none; width: 100%; margin-bottom: 10px;") 
+              i.fas.fa-qrcode 
+              |  SCAN QR CODE
+
+          .input-group
+            label PLAYER NAME
+            input#playerName(type="text" placeholder="Your Name...")
+          
+          .input-group
+            label SESSION CODE
+            input#sessionCode(type="text" placeholder="6-Digit Code" maxlength="6")
+          
+          .modal-buttons
+            button#confirmJoin.btn-pill-small CONFIRM
+            button#closeModal.btn-cancel CANCEL
+
+    #createModal.modal-overlay.hidden
+      .modal-content.glass-effect
+        h2(style="font-family: Georgia; color: #D8B56A;") HOST SETUP
+        .input-group
+          label(style="color: #D8B56A;") YOUR UNIQUE HOST ID
+          input#hostDisplayID(type="text" readonly style="background: rgba(0,0,0,0.3); color: #fff; border: 1px solid #444;")
+        
+        .input-group
+          label(style="color: #D8B56A;") MAX PLAYERS (At least 4, Max 6)
+          select#maxPlayers(style="width: 100%; padding: 10px; background: #3c0a0a; color: #D8B56A; border: 1px solid #D8B56A;")
+            option(value="4") 4 Players
+            option(value="5") 5 Players
+            option(value="6") 6 Players
+        
+        .modal-buttons
+          button#confirmCreate.btn-pill-small CONFIRM & CREATE
+          button#closeCreateModal.btn-cancel CANCEL
+
+    #recoveryModal.modal-overlay.hidden
+      .modal-content.glass-effect
+        h2(style="font-family: Georgia; color: #D8B56A;") ACTIVE SESSION FOUND
+        p(style="color: white; margin: 20px 0;") You have an ongoing session. Would you like to continue or start a new one?
+        .modal-buttons
+          button#continueSession.btn-pill-small CONTINUE OLD
+          button#startNewSession.btn-cancel START NEW
+    script(src="/js/home-ui.js")

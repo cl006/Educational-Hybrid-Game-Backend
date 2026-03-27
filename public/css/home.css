@@ -1,0 +1,424 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Georgia', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.layout-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* --- 容器 1: 左侧侧边栏 --- */
+.sidebar-container {
+    width: 90px;
+    height: 100%;
+
+    /* --- 核心修改：深酒红色半透明 --- */
+    background: rgba(60, 10, 10, 0.75);
+    /* 深沉的酒红色 */
+    backdrop-filter: blur(15px);
+    /* 毛玻璃模糊，增加质感 */
+    -webkit-backdrop-filter: blur(15px);
+
+    /* 边框建议使用淡淡的金色，呼应你的按钮和头像 */
+    border-right: 2px solid rgba(216, 181, 106, 0.4);
+    box-shadow: 5px 0 20px rgba(0, 0, 0, 0.5);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 100px 0 40px 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    pointer-events: auto;
+    overflow: visible;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-toggle {
+    font-size: 24px;
+    color: #2F4F4F;
+    cursor: pointer;
+}
+
+.nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.nav-link {
+    font-family: 'Georgia', serif;
+    color: rgba(255, 255, 255, 0.7);
+    /* 半透明白，作为非激活态 */
+    text-decoration: none;
+    text-align: center;
+    font-size: 11px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.nav-link i {
+    font-size: 26px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* --- 激活态：亮金色 --- */
+.nav-link.active {
+    color: #D8B56A;
+    /* 激活时使用金色，非常亮眼 */
+    text-shadow: 0 0 10px rgba(216, 181, 106, 0.5);
+}
+
+.nav-link:hover {
+    color: #FFFFFF;
+    /* 悬停时变纯白 */
+}
+
+/* --- 账户头像与气泡 (核心逻辑) --- */
+.account-section {
+    position: relative;
+}
+
+.avatar-wrapper {
+    text-decoration: none;
+    display: block;
+    position: relative;
+}
+
+.avatar-circle {
+    width: 50px;
+    height: 50px;
+    background-color: #D8B56A;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    transition: transform 0.3s ease;
+}
+
+.guest-icon {
+    background-color: #2F4F4F;
+}
+
+/* 气泡 Tooltip */
+.account-tooltip {
+    position: absolute;
+    left: 70px;
+    /* 弹出在侧边栏右侧 */
+    bottom: 5px;
+    background: #2F4F4F;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+
+    /* 初始隐藏动画 */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(-15px);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.avatar-wrapper:hover .account-tooltip,
+.avatar-wrapper:active .account-tooltip {
+    pointer-events: auto;
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.avatar-wrapper:hover .avatar-circle {
+    transform: scale(1.1);
+}
+
+.logout-link {
+    margin-left: 12px;
+    color: #D8B56A;
+    text-decoration: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    padding-left: 12px;
+}
+
+/* --- 容器 2: 右侧内容区 --- */
+.main-display-container {
+    position: relative;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: all 0.5s ease;
+}
+
+.media-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    /* 确保在按钮后面 */
+}
+
+.media-background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* 保持比例填充 */
+    filter: brightness(0.7);
+    /* 稍微调暗背景，让白色文字更清晰 */
+}
+
+.hero-box {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+.btn-pill {
+    width: 420px;
+    padding: 28px;
+    border-radius: 100px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #2F4F4F;
+    font-family: "Georgia", serif;
+    color: white;
+    font-size: 2.2rem;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-pill:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.25);
+    color: #D8B56A;
+    color: #D8B56A;
+    box-shadow: 0 15px 40px rgba(216, 181, 106, 0.4);
+}
+
+/* 弹窗遮罩层 */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    /* 背景变暗 */
+    backdrop-filter: blur(8px);
+    /* 毛玻璃效果 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+/* 深红色透明弹窗 */
+.glass-effect {
+    background: rgba(60, 10, 10, 0.9);
+    /* 深酒红 */
+    border: 2px solid #D8B56A;
+    /* 金色边框 */
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    width: 400px;
+}
+
+.hidden {
+    display: none;
+}
+
+.input-group {
+    margin: 20px 0;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    color: #D8B56A;
+    font-family: Georgia;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #D8B56A;
+    color: white;
+    outline: none;
+}
+
+#reader {
+    z-index: 10001;
+    /* 必须比 Modal 还要高 */
+    position: relative;
+}
+
+/* 按钮容器布局 */
+.modal-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+/* --- 确认按钮 (Confirm) --- */
+.btn-pill-small,
+#continueSession,
+#confirmJoin,
+#confirmCreate {
+    background-color: #D8B56A;
+    /* 金色背景 */
+    color: #1a1a1a;
+    /* 深色文字 */
+    border: none;
+    padding: 12px 35px;
+    /* 增加左右内边距，让它更像药丸 */
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 50px;
+    /* 核心：药丸形状 */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(216, 181, 106, 0.2);
+}
+
+.btn-pill-small:hover,
+#continueSession:hover,
+#confirmJoin:hover,
+#confirmCreate:hover {
+    background-color: #f1d292;
+    /* 悬停变亮 */
+    transform: scale(0.92);
+    /* 悬停轻微上浮 */
+    box-shadow: 0 6px 15px rgba(216, 181, 106, 0.4);
+}
+
+/* --- 取消按钮 (Cancel) --- */
+.btn-cancel,
+#closeModal,
+#closeCreateModal {
+    background-color: #444;
+    /* 深灰色背景 */
+    color: #ffffff;
+    /* 白色文字 */
+    border: 1px solid #555;
+    padding: 12px 35px;
+    /* 保持与确认按钮一致的内边距 */
+    font-size: 1rem;
+    border-radius: 50px;
+    /* 核心：药丸形状 */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover,
+#closeModal:hover,
+#closeCreateModal:hover {
+    background-color: #cc0000;
+    /* 悬停时变红 (提示危险/取消) */
+    border-color: #ff4d4d;
+    transform: scale(0.95);
+}
+
+/* 点击时的缩放效果 (可选) */
+#confirmJoin:active,
+#confirmCreate:active,
+.btn-cancel:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+    .sidebar-container {
+        width: 65px;
+    }
+
+    .btn-pill {
+        width: 75vw;
+        font-size: 1.4rem;
+        padding: 15px;
+        margin-left: 20px;
+    }
+
+    .modal-overlay {
+        z-index: 10000;
+        /* Higher than sidebar (9999) */
+        padding-left: 65px;
+        /* Push the entire content area to the right of the sidebar */
+        align-items: flex-start;
+        /* Move content towards the top instead of middle */
+        padding-top: 50px;
+        /* Adjust this to move it higher or lower */
+    }
+
+    /* 2. Adjust the scan/join box size and position */
+    .glass-effect {
+        width: 85%;
+        /* Narrower to fit the new pushed-right layout */
+        max-width: 320px;
+        padding: 20px 15px;
+        /* Smaller padding to save space */
+        margin-right: 10px;
+        /* Tiny gap on the right edge */
+    }
+
+    /* 3. Make the QR reader slightly smaller for small screens */
+    #reader {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    /* 4. Shrink the inputs so they don't take too much vertical space */
+    .input-group {
+        margin: 10px 0;
+    }
+
+    .input-group input {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+
+    .btn-pill-small,
+    .btn-cancel,
+    #confirmJoin,
+    #confirmCreate,
+    #closeModal {
+        padding: 10px 20px;
+        /* Smaller padding for "Pill" shape on mobile */
+        font-size: 0.85rem;
+        /* Smaller text */
+    }
+
+    .account-tooltip {
+        left: 60px;
+        font-size: 12px;
+    }
+}

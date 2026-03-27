@@ -1,0 +1,28 @@
+doctype html
+html
+  head
+    title Login - Todo App
+    link(rel="stylesheet", href="/css/login_register.css")
+  body
+    .back-home-container 
+      a.back-btn(href="/")
+        i.arrow-icon &larr; 
+        .back-tooltip Back to Home
+    .container
+      h1 User Login
+      if error
+        p.error-msg(style="color: red") #{error}
+        
+      form(action="/login", method="POST")
+        .form-group
+          label(for="user_email") Email:
+          input#email(type="email", name="user_email", required)
+        
+        .form-group
+          label(for="password") Password:
+          input#password(type="password", name="password", required)
+          
+        button(type="submit") Login
+      p 
+        | Don't have an account? 
+        a(href="/register") Register here

@@ -1,0 +1,342 @@
+/* --- 基础重置 --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Georgia', serif;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.layout-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* --- 侧边栏：深酒红色半透明 (对齐首页) --- */
+.sidebar-container {
+    width: 90px;
+    height: 100%;
+    background: rgba(60, 10, 10, 0.75);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-right: 2px solid rgba(216, 181, 106, 0.4);
+    box-shadow: 5px 0 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 60px 0 40px 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    text-align: center;
+    font-size: 11px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.nav-link i {
+    font-size: 26px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* 激活态：亮金色 */
+.nav-link.active {
+    color: #D8B56A;
+    text-shadow: 0 0 10px rgba(216, 181, 106, 0.5);
+}
+
+/* --- 右侧内容区 --- */
+.main-display-container {
+    margin-left: 90px;
+    /* 避开固定定位的侧边栏 */
+    position: relative;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.media-background {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.media-background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.6);
+    transition: opacity 0.8s ease-in-out, filter 0.5s;
+    opacity: 0.6;
+    will-change: opacity;
+}
+
+/* 顶部状态药丸 */
+.status-header-overlay {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+}
+
+.status-pill {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 25px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #333;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 中间玻璃信息卡片 */
+.info-glass-card {
+    background: rgba(60, 10, 10, 0.4);
+    /* 深酒红玻璃感 */
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(216, 181, 106, 0.3);
+    padding: 60px;
+    border-radius: 40px;
+    text-align: center;
+    min-width: 450px;
+}
+
+.info-row {
+    margin-bottom: 30px;
+}
+
+.info-row label {
+    display: block;
+    color: #D8B56A;
+    /* 金色文字 */
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.value-text {
+    font-size: 2.5rem;
+    color: white;
+    font-weight: 900;
+    border-bottom: 2px solid rgba(216, 181, 106, 0.5);
+    padding: 0 30px;
+}
+
+/* 大药丸按钮 (对齐首页) */
+.btn-pill {
+    width: 100%;
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: #D8B56A;
+    color: #1a1a1a;
+    font-size: 1.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-pill:hover {
+    transform: translateY(-5px);
+    background: #f1d292;
+    box-shadow: 0 15px 40px rgba(216, 181, 106, 0.4);
+}
+
+/* --- 右下角规则按钮 --- */
+.rules-btn {
+    position: absolute;
+    bottom: 30px;
+    /* 距离底部 30px */
+    right: 40px;
+    /* 距离右侧 40px */
+
+    /* 样式：深酒红背景 (对齐侧边栏) */
+    background: rgba(60, 10, 10, 0.8);
+    backdrop-filter: blur(10px);
+
+    /* 边框：金色 (对齐首页按钮) */
+    border: 2px solid #D8B56A;
+    color: #D8B56A;
+
+    padding: 12px 25px;
+    border-radius: 50px;
+    /* 药丸形状 */
+    font-family: 'Georgia', serif;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.rules-btn i {
+    font-size: 1.1rem;
+}
+
+/* 悬停效果：亮金色发光 */
+.rules-btn:hover {
+    background: #D8B56A;
+    color: #3C0A0A;
+    /* 文字变深色 */
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(216, 181, 106, 0.6);
+}
+
+.rules-btn:active {
+    transform: scale(0.95);
+}
+
+.interaction-zone {
+    width: 100%;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* 针对手动输入框的微调 */
+.manual-input-group input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
+}
+
+.btn-scan:active,
+#manualSubmit:active {
+    transform: scale(0.95);
+    transition: 0.1s;
+}
+
+/* 响应式辅助（如果 JS 没加载也能有基础显示） */
+.hint-text {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
+}
+
+/* --- 手机移动端适配 --- */
+/* --- 移动端适配 (完全同步首页逻辑) --- */
+@media (max-width: 768px) {
+
+    /* 1. 侧边栏缩窄，不改变位置 */
+    .sidebar-container {
+        width: 65px;
+        padding-top: 40px;
+        /* 移动端顶部留白减少 */
+    }
+
+    /* 缩小侧边栏内的图标 */
+    .nav-link i {
+        font-size: 20px;
+    }
+
+    .nav-link span {
+        font-size: 9px;
+        /* 文字更小 */
+    }
+
+    .nav-group {
+        gap: 25px;
+        /* 间距收紧 */
+    }
+
+    /* 2. 主内容区域适配侧边栏宽度 */
+    .main-display-container {
+        margin-left: 65px;
+        /* 对应侧边栏的 65px */
+        padding: 15px;
+        align-items: center;
+        /* 保持居中，或改为 flex-start 如果你想靠上 */
+    }
+
+    /* 3. 顶部状态药丸适配 */
+    .status-header-overlay {
+        top: 10px;
+        right: 15px;
+        width: auto;
+    }
+
+    .status-pill {
+        font-size: 0.65rem;
+        padding: 6px 12px;
+    }
+
+    /* 4. 信息卡片 (Info Card) 适配 */
+    .info-glass-card {
+        width: 90%;
+        max-width: 300px;
+        /* 类似首页 modal 的宽度 */
+        padding: 25px 15px;
+        min-width: unset;
+    }
+
+    .value-text {
+        font-size: 1.5rem;
+        /* 减小字号防止溢出 */
+        padding: 0 10px;
+    }
+
+    .info-row label {
+        font-size: 0.7rem;
+    }
+
+    /* 5. 扫描按钮 (大药丸按钮适配首页) */
+    .btn-pill {
+        width: 100%;
+        /* 在卡片内铺满 */
+        font-size: 1.2rem;
+        padding: 12px;
+    }
+
+    /* 6. 头像气泡适配 */
+    .account-tooltip {
+        left: 55px;
+        font-size: 11px;
+    }
+
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    /* 7. 规则按钮 */
+    .rules-btn {
+        bottom: 20px;
+        right: 20px;
+        font-size: 0.7rem;
+        padding: 8px 12px;
+    }
+}

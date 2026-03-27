@@ -1,0 +1,44 @@
+doctype html 
+html 
+    head 
+        title Registration 
+        link(rel="stylesheet", href="/css/login_register.css")
+    body 
+        .container 
+            h1 User Registration 
+            if error 
+                .error-msg= error 
+            form(action="/register", method="Post")
+                .form-group 
+                    label(for="username") Username: 
+                    input#username(type="text", name="username", required)
+
+                .form-group
+                label(for="user_email") Email:
+                input#email(type="email", name="user_email", required)
+                
+                .form-group
+                label(for="password") Password:
+                input#password(type="password", name="password", required, minlength='6')
+                
+                .form-group
+                label(for="age") Age:
+                input#age(type="number", name="age", required)
+                
+                .form-group
+                label(for="gender") Gender:
+                select#gender(name="gender", required)
+                    option(value="", disabled, selected)
+                    option(value="male") Male
+                    option(value="female") Female
+                    option(value="other") Other
+                    
+                button(type="submit") Register Now   
+            p 
+                | Already have an account? 
+                a(href="/login") Login here
+        
+        if success 
+            script. 
+                alert("Registration Successful! Click close to go to Login page.");
+                window.location.href = "/login";
