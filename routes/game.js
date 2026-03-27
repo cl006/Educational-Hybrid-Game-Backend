@@ -95,51 +95,107 @@ module.exports = (db) => {
         }
     });
 
-    // 4. Submit Verification (Processing the manual input of Cell + Verify Code)
+    // --- 4. 统一验证逻辑 (核心分流引擎) ---
     router.post('/submit-verification', async (req, res) => {
-        const { sessionId, cellCode, verifyCode } = req.body;
+        const { sessionId, cellCode, verifyCode, isShop } = req.body;
+        const cleanCell = cellCode.trim().toUpperCase();
 
         try {
-            // A. Check if the verification code matches the cell for this session
+            // --- 第一步：Shop 逻辑优先 ---
+            if (cleanCell === 'SHOP' || isShop) {
+                const [sessionRows] = await db.promise().execute(
+                    'SELECT shop_access_code FROM game_session WHERE session_id = ?',
+                    [sessionId]
+                );
+
+                if (sessionRows.length > 0 && sessionRows[0].shop_access_code === verifyCode) {
+                    return res.json({
+                        success: true,
+                        outcome: 'SHOP',
+                        message: "Welcome to the Secret Shop!"
+                    });
+                } else {
+                    return res.json({ success: false, message: "Invalid Shop Access Code!" });
+                }
+            }
+
+            // --- 第二步：Special Cell 逻辑 ---
             const [rows] = await db.promise().execute(
                 `SELECT outcome_type FROM special_cell_verification 
-                 WHERE session_id = ? AND cell_code = ? AND verify_code = ?`,
-                [sessionId, cellCode.toUpperCase(), verifyCode.toUpperCase()]
+                WHERE session_id = ? AND cell_code = ? AND verify_code = ?`,
+                [sessionId, cleanCell, verifyCode.toUpperCase()]
             );
 
             if (rows.length === 0) {
-                return res.json({ success: false, message: "Invalid Cell Code or Verification Code!" });
+                return res.json({ success: false, message: "Invalid Grid ID or Verification Code!" });
             }
 
-            const outcome = rows[0].outcome_type;
-            let finalMessage = `Verification Successful! Event: ${outcome}`;
+            const outcome = rows[0].outcome_type.toUpperCase();
             let isReal = false;
+            let redirectType = '';
+            let statusMsg = `Discovered: ${outcome}`;
 
-            // B. If it's a Treasure event, check if it's REAL or FAKE
-            if (outcome.toLowerCase() === 'treasure' || outcome === 'Special') {
-                const [treasure] = await db.promise().execute(
-                    'SELECT is_real FROM session_treasures WHERE session_id = ? AND cell_code = ?',
-                    [sessionId, cellCode.toUpperCase()]
-                );
+            // --- 第三步：分流难度分配 ---
+            switch (outcome) {
+                case 'TREASURE':
+                    const [treasure] = await db.promise().execute(
+                        'SELECT is_real FROM session_treasures WHERE session_id = ? AND cell_code = ?',
+                        [sessionId, cleanCell]
+                    );
+                    isReal = treasure.length > 0 && treasure[0].is_real;
+                    redirectType = 'HARD';
+                    statusMsg = isReal ? "REAL TREASURE FOUND!" : "It's a fake treasure!";
+                    break;
 
-                if (treasure.length > 0 && treasure[0].is_real) {
-                    finalMessage = "CONGRATULATIONS! You found a REAL treasure!";
-                    isReal = true;
-                } else {
-                    finalMessage = "It's a fake treasure! Just an old rusty pot.";
-                }
+                case 'SWAP':
+                    redirectType = 'MEDIUM';
+                    break;
+
+                case 'MOVEMENT':
+                    redirectType = 'EASY';
+                    break;
+
+                case 'EMPTY':
+                    redirectType = 'NONE';
+                    statusMsg = "Just dust and echoes here.";
+                    break;
             }
 
             res.json({
                 success: true,
                 outcome: outcome,
                 isReal: isReal,
-                message: finalMessage
+                redirectType: redirectType,
+                message: statusMsg
             });
 
         } catch (err) {
             console.error(err);
-            res.status(500).json({ success: false, message: "Verification Error" });
+            res.status(500).json({ success: false, message: "System Verification Error" });
+        }
+    });
+
+    // --- 5. 随机题目获取 (带选项) ---
+    router.get('/game/get-question/:level', async (req, res) => {
+        const { level } = req.params;
+        try {
+            const [qRows] = await db.promise().execute(
+                'SELECT * FROM questions WHERE level = ? ORDER BY RAND() LIMIT 1',
+                [level.toUpperCase()]
+            );
+
+            if (qRows.length === 0) return res.json({ success: false, message: "No questions." });
+
+            const question = qRows[0];
+            // 抓取选项，并包含 is_answer 字段以便前端校验
+            const [cRows] = await db.promise().execute(
+                'SELECT choice_id, choice_text, is_answer FROM question_choices WHERE question_id = ?',
+                [question.question_id]
+            );
+
+            res.json({ success: true, question, choices: cRows });
+        } catch (err) {
+            res.status(500).json({ success: false });
         }
     });
 
@@ -235,6 +291,22 @@ module.exports = (db) => {
                 res.json({ success: true, outcome: rows[0].outcome_type });
             }
         } catch (err) { res.status(500).json({ success: false }); }
+    });
+
+    router.get('/play', (req, res) => {
+        const { type } = req.query; // 获取是 'special' 还是 'shop'
+
+        const sql = "SELECT room_code FROM game_session WHERE is_active = 1 ORDER BY created_at DESC LIMIT 1";
+
+        db.query(sql, (err, results) => {
+            if (err || results.length === 0) return res.redirect('/');
+
+            const roomCode = results[0].room_code;
+
+            // 重定向时带上参数：/game/join/ABCD?auto=shop 或 ?auto=special
+            const redirectUrl = `/game/join/${roomCode}?auto=${type || 'special'}`;
+            res.redirect(redirectUrl);
+        });
     });
 
     router.post('/game/next-round-trigger', (req, res) => {
