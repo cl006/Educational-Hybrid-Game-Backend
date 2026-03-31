@@ -31,17 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await res.json();
 
-            // --- 🏆 新增：自动跳转到结果页逻辑 ---
             if (data.ended_at !== null) {
                 console.log("🏁 Game ended by host. Redirecting to results...");
                 window.location.href = `/results/${session_id}`;
-                return; // 结束函数，防止后续代码执行
+                return;
             }
-            // ------------------------------------
 
             const currentRound = parseInt(data.round_number) || 1;
 
-            // ... 原有的 Round 2, 4, 6 跳转逻辑 ...
             if ([2, 4, 6].includes(currentRound)) {
                 const lastRedirect = sessionStorage.getItem('last_redirect_round');
                 if (lastRedirect != currentRound) {
@@ -50,11 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // ... 更新背景和轮次文字的逻辑 ...
             const roundTextEl = document.querySelector('.value-text');
             if (roundTextEl) roundTextEl.innerText = currentRound;
 
-            // ... 背景更新逻辑 ...
         } catch (err) {
             console.warn("Sync temporarily unavailable:", err);
         }
