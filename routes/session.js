@@ -45,6 +45,7 @@ module.exports = (db) => {
             res.status(500).json({ success: false });
         }
     });
+
     router.post('/create-session', async (req, res) => {
         try {
             const realUserId = req.session.user_id;
@@ -82,7 +83,6 @@ module.exports = (db) => {
         }
     });
 
-    // --- 逻辑 D
     router.post('/start-game-trigger', async (req, res) => {
         const { sessionId } = req.body;
         const currentUserId = req.session.user_id;
@@ -210,7 +210,7 @@ module.exports = (db) => {
         }
     });
 
-    // --- 逻辑 F: 加入游戏 (包含登录、状态、1-12随机图及人数上限校验) ---
+
     router.post('/join-session', async (req, res) => {
         try {
             const { playerName, accessCode } = req.body;
@@ -313,7 +313,6 @@ module.exports = (db) => {
         }
     });
 
-    // --- 逻辑 G
     router.get('/session-player/:code', async (req, res) => {
         try {
             const accessCode = req.params.code;
@@ -363,7 +362,6 @@ module.exports = (db) => {
         }
     });
 
-    // --- 逻辑 I
     router.get('/get-players/:sid', async (req, res) => {
         try {
             const [rows] = await db.promise().execute(
@@ -377,7 +375,6 @@ module.exports = (db) => {
         }
     });
 
-    // --- 逻辑 J
     router.get('/check-game-status/:sid', async (req, res) => {
         try {
             const sessionId = req.params.sid;
@@ -399,7 +396,6 @@ module.exports = (db) => {
         }
     });
 
-    // --- 逻辑 K
     router.get('/game-start/:code', async (req, res) => {
         try {
             const currentUserId = req.session.user_id;
@@ -465,7 +461,6 @@ module.exports = (db) => {
         }
     });
 
-    // --- 逻辑 L
     router.delete('/exit-session', async (req, res) => {
         try {
             const { sessionId, userId } = req.body;

@@ -31,7 +31,7 @@ module.exports = (db) => {
     router.get('/get-game-status/:sessionId', async (req, res) => {
         try {
             const [rows] = await db.promise().execute(
-                'SELECT round_number, started_at FROM game_session WHERE session_id = ?',
+                'SELECT round_number, started_at, ended_at FROM game_session WHERE session_id = ?',
                 [req.params.sessionId]
             );
             if (rows.length === 0) return res.status(404).json({ error: "Session not found" });
@@ -121,7 +121,7 @@ module.exports = (db) => {
                     outcome: outcome,
                     isReal: isReal,
                     redirectType: redirectType,
-                    message: `触发事件: ${outcome}`
+                    message: `Trigger event: ${outcome}`
                 });
             }
 
@@ -738,11 +738,9 @@ module.exports = (db) => {
         }
     });
 
-    // 在 routes/game.js 内部
     router.post('/end-session', (req, res) => {
         const { sessionId } = req.body;
 
-        // SQL：更新状态为 ended，并记录当前时间
         const sql = "UPDATE game_session SET status = 'ended', ended_at = NOW() WHERE session_id = ?";
 
         db.query(sql, [sessionId], (err, result) => {

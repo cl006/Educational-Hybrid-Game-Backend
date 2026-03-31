@@ -30,26 +30,31 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!res.ok) return;
 
             const data = await res.json();
+
+            // --- 🏆 新增：自动跳转到结果页逻辑 ---
+            if (data.ended_at !== null) {
+                console.log("🏁 Game ended by host. Redirecting to results...");
+                window.location.href = `/results/${session_id}`;
+                return; // 结束函数，防止后续代码执行
+            }
+            // ------------------------------------
+
             const currentRound = parseInt(data.round_number) || 1;
 
+            // ... 原有的 Round 2, 4, 6 跳转逻辑 ...
             if ([2, 4, 6].includes(currentRound)) {
                 const lastRedirect = sessionStorage.getItem('last_redirect_round');
                 if (lastRedirect != currentRound) {
                     sessionStorage.setItem('last_redirect_round', currentRound);
-
                     window.location.href = `/question-level/${session_id}?mode=ROUND&round=${currentRound}`;
                 }
             }
 
+            // ... 更新背景和轮次文字的逻辑 ...
             const roundTextEl = document.querySelector('.value-text');
             if (roundTextEl) roundTextEl.innerText = currentRound;
 
-            let targetImg = BACKGROUND_THEMES[1];
-            if (currentRound >= 6) targetImg = BACKGROUND_THEMES[6];
-            else if (currentRound >= 4) targetImg = BACKGROUND_THEMES[4];
-            else if (currentRound >= 2) targetImg = BACKGROUND_THEMES[2];
-            updateBackground(targetImg);
-
+            // ... 背景更新逻辑 ...
         } catch (err) {
             console.warn("Sync temporarily unavailable:", err);
         }
